@@ -1,3 +1,12 @@
+import { 
+  TBuildRequestContructorParams, 
+  TBuildRequestContructorValues, 
+  TRequestBuilderResponse, 
+  TRequestConstructorParams, 
+  TRequestConstructorValues 
+} from "@/types/api"
+import { AxiosInstance, AxiosRequestConfig } from "axios"
+
 const METHOD = {
   GET: 'GET',
   POST: 'POST',
@@ -6,61 +15,43 @@ const METHOD = {
   DELETE: 'DELETE',
 }
 
-export default (
-  {
-    api,
-    method,
-    path = null,
-    params: paramsBuilder = {},
-    query: queryBuilder = {},
-    body: bodyBuilder = {},
-    config: configBuilder = {},
-  }: any,
-  {
-    path: forcedPath = null,
-    params: paramsValue = {},
-    query: queryValue = {},
-    body: bodyValue = {},
-    config: configRequest = {}
-  }: any = {},
-): any => {
-  try {
-    return buildRequest(
-      {
-        api,
-        method,
-        path: path,
-        params: paramsBuilder,
-        query: queryBuilder,
-        body: bodyBuilder,
-        config: configBuilder,
-      },
-      {
-        api,
-        path: forcedPath,
-        params: paramsValue,
-        query: queryValue,
-        body: bodyValue,
-        config: configRequest
-      },
-    )
-  } catch (e) {
-    console.error(e)
-    return false
+const requestBuilder = (
+  api: AxiosInstance, 
+  method: string, 
+  pathValue: string, 
+  bodyValue?: Record<string, any>, 
+  config: AxiosRequestConfig = {}
+): TRequestBuilderResponse => {
+  if (config.headers) {
+    config.headers = {
+      ...api.defaults.headers.common,
+      ...api.defaults.headers[method] as Record<string, any>,
+      ...config.headers
+    }
+  }
+  // console.log('useRequest CONFIG',config);
+  return {
+    method: method,
+    path: pathValue,
+    body: JSON.stringify(bodyValue),
+    exec: [ METHOD.GET, METHOD.DELETE ].includes(method)
+      ? () => (api as Record<string, any>)[method](pathValue, config)
+      : () => (api as Record<string, any>)[method](pathValue, bodyValue, config),
   }
 }
 
-function buildRequest(
-  { api, method, path: path, params: paramsBuilder, query: queryBuilder, body: bodyBuilder, config: configBuilder }: any,
-  { path: forcedPath, params: paramsValue, query: queryValue, body: bodyValue, config: configRequest }: any,
-) {
+
+const buildRequest = (
+  { api, method, path: path, params: paramsBuilder, query: queryBuilder, body: bodyBuilder, config: configBuilder }: TBuildRequestContructorParams,
+  { path: forcedPath, params: paramsValue, query: queryValue, body: bodyValue, config: configRequest }: TBuildRequestContructorValues,
+): TRequestBuilderResponse => {
   let finalPath = forcedPath || path;
   method = method.toLowerCase()
 
   const config = { ...configBuilder, ...configRequest }
 
   if (!paramsBuilder && !queryBuilder && !bodyBuilder) {
-    return requestBuilder(method, path, config)
+    return requestBuilder(api, method, path, config)
   }
 
   //If procedural path configuration
@@ -147,21 +138,46 @@ function buildRequest(
   return requestBuilder(api, method, finalPath, bodyValue, config)
 }
 
-function requestBuilder(api: any, method: any, pathValue: any, bodyValue = null, config: any = {}) {
-  if (config.headers) {
-    config.headers = {
-      ...api.defaults.headers.common,
-      ...api.defaults.headers[method],
-      ...config.headers
-    }
-  }
-  // console.log('useRequest CONFIG',config);
-  return {
-    method: method,
-    path: pathValue,
-    body: JSON.stringify(bodyValue),
-    exec: [ METHOD.GET, METHOD.DELETE ].includes(method)
-      ? () => api[method](pathValue, config)
-      : () => api[method](pathValue, bodyValue, config),
+export default (
+  {
+    api,
+    method,
+    path = '',
+    params: paramsBuilder = {},
+    query: queryBuilder = {},
+    body: bodyBuilder = {},
+    config: configBuilder = {},
+  }: TRequestConstructorParams,
+  {
+    path: forcedPath = '',
+    params: paramsValue = {},
+    query: queryValue = {},
+    body: bodyValue = {},
+    config: configRequest = {}
+  }: TRequestConstructorValues = {},
+): TRequestBuilderResponse | boolean => {
+  try {
+    return buildRequest(
+      // honestly, I don't fully get this syntax and was following tslinter hints - would love to discuss this on a call
+      {
+        api,
+        method,
+        path: path = '',
+        params: paramsBuilder,
+        query: queryBuilder,
+        body: bodyBuilder,
+        config: configBuilder,
+      },
+      {
+        path: forcedPath = '',
+        params: paramsValue,
+        query: queryValue,
+        body: bodyValue,
+        config: configRequest
+      },
+    )
+  } catch (e) {
+    console.error(e)
+    return false
   }
 }

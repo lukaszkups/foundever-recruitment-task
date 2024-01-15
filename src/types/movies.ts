@@ -1,3 +1,6 @@
+import { AxiosInstance } from "axios";
+import { TRequestValues } from "./api";
+
 export type TMovieData = {
   adult?: boolean;
   backdrop_path: string;
@@ -19,3 +22,41 @@ export type TCategoryItem = {
   name: string;
   value: number[];
 };
+
+export type TGetMovieGenres = {
+  api: AxiosInstance;
+  method: string;
+  path: string;
+  query: {
+    api_key: {
+      required: boolean;
+      default: string;
+    },
+    page: {
+      required: boolean;
+    },
+    with_genres: {
+      required: boolean;
+    }
+  }
+};
+
+export type TGetMovieGenresRequestValues = {
+  query?: {
+    with_genres: string | null;
+    page: number;
+  },
+  body?: TRequestValues;
+}
+
+export type TGetMoviesPopular = {
+  api: AxiosInstance;
+  method: string;
+  path: string;
+  query: {
+    api_key: {
+      required: boolean;
+      default: string;
+    }
+  }
+}
