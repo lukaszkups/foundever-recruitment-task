@@ -2,9 +2,9 @@ import useApi from "@composables/useApi";
 import { GET_MOVIES_GENRES } from "../movies.api";
 import { useMoviesStore } from "..";
 
-export const useMovieFavorites = () => {
+export const useMovieGenres = () => {
   const moviesState = useMoviesStore();
-  
+
   return {
     /**
      * Get Movies genres
