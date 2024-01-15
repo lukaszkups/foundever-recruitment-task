@@ -2,13 +2,15 @@
 import { ref, onMounted, computed } from "vue";
 import { BaseCard, MovieCard } from "@/app.organizer";
 import { useMoviesStore } from "@/stores/movies";
+import { useMovieTrends } from "@/stores/movies/actions/trends";
 
 const backgroundImage = ref("");
 
 const storeMovies =  useMoviesStore();
+const movieTrends = useMovieTrends();
 
 const movies = computed(() => storeMovies.moviesTrends)
-const getTrends = storeMovies.getTrends;
+const getTrends = movieTrends.getTrends;
 
 const updateBackgroundImage = (imagePath: string) => {
   backgroundImage.value = imagePath;
@@ -16,7 +18,6 @@ const updateBackgroundImage = (imagePath: string) => {
 
 onMounted(() => getTrends());
 </script>
-
 <template>
   <div class="flex flex-1 relative">
     <transition name="slide-fade" ease-out>
@@ -47,5 +48,4 @@ onMounted(() => getTrends());
     </div>
   </div>
 </template>
-
 <style lang="scss"></style>

@@ -8,13 +8,11 @@ const router = useRouter();
 const App: IAppProvider = useAppProvider(router);
 provide("App", App);
 </script>
-
 <template>
   <div id="app" :class="[App.theme.value]">
     <router-view />
   </div>
 </template>
-
 <style>
 .slide-fade-enter-active {
   opacity: 0;

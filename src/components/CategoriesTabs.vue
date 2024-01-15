@@ -4,7 +4,7 @@ import { TCategoryItem } from "@/types/movies";
 
 const props = defineProps<{
   items: TCategoryItem[];
-  value: TCategoryItem | undefined;
+  value: TCategoryItem | undefined | null;
 }>();
 
 const emit = defineEmits<{
@@ -66,5 +66,4 @@ const changeSelector = (event: Event) => {
     </div>
   </div>
 </template>
-
 <style scoped></style>
