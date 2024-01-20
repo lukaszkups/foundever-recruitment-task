@@ -1,10 +1,10 @@
-import { TGetMovieGenres, TGetMoviesPopular } from "@/types/movies";
+import { TMovieApiConstructPayload } from "@/types/movies";
 import axios from "axios";
 
 const PATH_MOVIE_DB = "https://api.themoviedb.org/3/";
 const apiKey = import.meta.env.VITE_DBMOVIE_API_KEY;
 
-export const GET_MOVIES_GENRES: TGetMovieGenres = {
+export const GET_MOVIES_GENRES: TMovieApiConstructPayload = {
   api: axios,
   method: 'GET',
   path: `${ PATH_MOVIE_DB }discover/movie`,
@@ -23,7 +23,7 @@ export const GET_MOVIES_GENRES: TGetMovieGenres = {
   },
 };
 
-export const GET_MOVIES_POPULAR: TGetMoviesPopular = {
+export const GET_MOVIES_POPULAR: TMovieApiConstructPayload = {
   api: axios,
   method: 'GET',
   path: `${ PATH_MOVIE_DB }movie/popular`,

@@ -23,22 +23,25 @@ export type TCategoryItem = {
   value: number[];
 };
 
-export type TGetMovieGenres = {
+export type TMovieApiConstructPayload = {
   api: AxiosInstance;
   method: string;
-  path: string;
-  query: {
-    api_key: {
+  path: string | null;
+  params?: any;
+  query?: {
+    api_key?: {
       required: boolean;
       default: string;
     },
-    page: {
+    page?: {
       required: boolean;
     },
-    with_genres: {
+    with_genres?: {
       required: boolean;
     }
-  }
+  },
+  body?: any;
+  config?: any;
 };
 
 export type TGetMovieGenresRequestValues = {
@@ -47,16 +50,4 @@ export type TGetMovieGenresRequestValues = {
     page: number;
   },
   body?: TRequestValues;
-}
-
-export type TGetMoviesPopular = {
-  api: AxiosInstance;
-  method: string;
-  path: string;
-  query: {
-    api_key: {
-      required: boolean;
-      default: string;
-    }
-  }
 }
